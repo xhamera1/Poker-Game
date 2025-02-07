@@ -85,14 +85,13 @@ Projekt podzielony jest na **cztery moduły**:
 
 ---
 
-## 📖 Dokumentacja Javadoc
+## Dokumentacja Javadoc
 - Katalog **`javadoc`** zawiera automatycznie wygenerowaną **dokumentację projektu**, dostępną w formacie HTML.
 - Dokumentacja obejmuje opisy klas, metod i interfejsów użytych w kodzie.
 - Znajduje się w ścieżce:
   ```
   javadoc/site/apidocs/index.html
   ```
-  Można ją otworzyć w przeglądarce internetowej.
 
 ---
 
