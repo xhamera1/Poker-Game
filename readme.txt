@@ -9,7 +9,7 @@ Blindy: Gra wprowadza dwa rodzaje blindów – mały i duży. Stawki wynoszą od
 
 Przygotowanie do gry: Po dołączeniu do gry, gracz może wybrać opcję "READY", aby zasygnalizować gotowość do rozpoczęcia rozgrywki.
 
-Talia kart: Talia kart jest tasowana, a następnie każdy gracz otrzymuje dwie karty. Gra odbywa się na stole z 5 wspólnymi kartami.
+Talia kart: Talia kart jest tasowana, a następnie każdy gracz na początku otrzymuje 5 kart z tasowanej talii.
 
 Akcje graczy: Gracze mogą podejmować różne akcje, takie jak:
 
@@ -69,6 +69,14 @@ Opis: Moduł zawierający logikę biznesową rozgrywki. W tym module znajdują s
 
 poker-common
 Opis: Moduł zawierający klasy pomocnicze, które są wykorzystywane przez pozostałe moduły. Zawiera wspólne definicje, takie jak klasy reprezentujące komunikaty wysyłane przez klienta i serwer, struktury danych oraz inne elementy wspólne dla całego projektu.
+
+Uruchomienie Serwera
+Otwórz terminal, przejdź do katalogu poker-server/target i uruchom serwer:
+java -jar poker-server-1.0-SNAPSHOT.jar
+
+Uruchomienie Klienta
+Otwórz nowy terminal, przejdź do katalogu poker-client/target i uruchom klienta:
+java -jar poker-client-1.0-SNAPSHOT.jar
 
 Jakość kodu
 Projekt przeszedł przez SonarQube Quality Gate z pozytywnym wynikiem. Zostały uwzględnione następujące aspekty:
