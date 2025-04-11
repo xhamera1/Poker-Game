@@ -1,127 +1,99 @@
-# Poker-Game
+# Java Network Poker Game
 
-## Autor: Patryk Chamera
+## Overview
 
-Projekt **"Poker-Game"** to gra karciana typu **poker pięciokartowy dobierany**, napisana w języku **Java** w ramach projektu na przedmiot **Programowanie Zaawansowane 2** na studiach.
+This project is a client-server implementation of the classic **Five-Card Draw Poker** game, developed in **Java**. It simulates a complete poker gameplay loop, handling player management, card dealing, betting rounds, hand evaluation, and network communication for multiplayer sessions. This project was originally developed as part of an academic advanced programming course.
 
-Gra symuluje klasyczną rozgrywkę w pokera, zawierając mechanizmy zarządzania graczami, talią kart oraz stanem gry. Projekt obejmuje kluczowe elementy, takie jak:
-- dodawanie graczy,
-- zarządzanie stawkami,
-- rozdawanie i wymiana kart,
-- obsługa małego i dużego blinda,
-- pulę zakładów i porównywanie rąk.
+## Features
 
----
+* **Multiplayer Support:** Supports 2 to 4 players connecting remotely via a client-server architecture.
+* **Game Variant:** Implements Five-Card Draw poker rules.
+* **Core Gameplay Mechanics:**
+    * Handles player joining/leaving with unique IDs and starting stacks.
+    * Manages Small Blind (20 units) and Big Blind (40 units).
+    * Facilitates standard poker actions: `FOLD`, `CALL`, `CHECK`, `RAISE`.
+    * Includes a card `EXCHANGE` phase specific to Draw Poker.
+    * Manages player readiness (`READY` state).
+* **Betting & Pot Management:** Tracks bets, manages the pot size across betting rounds.
+* **Hand Evaluation:** Automatically evaluates and compares player hands at showdown to determine the winner(s).
+* **Networking:** Built on a client-server model for distributed gameplay.
 
-## Zasady gry
+## Architecture
 
-### Dodawanie graczy
-- Gra obsługuje **od 2 do 4 graczy**.
-- Każdy gracz dołącza do gry, podając swoje **unikalne ID**.
+The application follows a **client-server architecture**:
 
-### Blindy
-- **Mały blind**: 20 jednostek.
-- **Duży blind**: 40 jednostek.
+* **Server:** Manages the central game state, enforces game rules, handles player connections, and processes client commands.
+* **Client:** Connects to the server, sends player actions, and receives game state updates for display (text-based console client provided).
 
-### Przygotowanie do gry
-- Po dołączeniu, gracze muszą oznaczyć gotowość do gry (`READY`).
+## Communication Protocol
 
-### Rozdawanie kart
-- Każdy gracz na początku otrzymuje **5 kart** z tasowanej talii.
+Communication uses a defined text-based protocol. Clients send commands prefixed with `GAME_ID` and `PLAYER_ID`.
 
-### Akcje graczy
-Gracze mogą wykonywać następujące akcje:
-- **`FOLD`** – spasowanie ręki.
-- **`CALL`** – wyrównanie aktualnej stawki.
-- **`RAISE`** – podbicie stawki.
-- **`CHECK`** – sprawdzenie bez podbijania.
-- **`EXCHANGE`** – wymiana kart w fazie dobierania.
-- **`LEAVE`** – opuszczenie gry.
+**Client Commands:**
 
-### Porównywanie rąk
-- Po zakończeniu rundy następuje **analiza układów**, a najlepsza ręka zgarnia pulę.
+| Command                                | Description                                       |
+| :------------------------------------- | :------------------------------------------------ |
+| `GAME_ID PLAYER_ID CREATE`             | Creates a new game instance.                      |
+| `GAME_ID PLAYER_ID JOIN amount`        | Joins an existing game with a starting `amount`.  |
+| `GAME_ID PLAYER_ID READY`              | Signals the player is ready to start the game.    |
+| `GAME_ID PLAYER_ID FOLD`               | Folds the current hand.                           |
+| `GAME_ID PLAYER_ID CALL`               | Calls the current bet amount.                     |
+| `GAME_ID PLAYER_ID CHECK`              | Checks (passes the turn if no bet is pending).    |
+| `GAME_ID PLAYER_ID RAISE raiseValue`   | Raises the current bet by `raiseValue`.           |
+| `GAME_ID PLAYER_ID EXCHANGE cardIndices` | Exchanges cards specified by `cardIndices` (e.g., `2,3`). |
+| `GAME_ID PLAYER_ID STATUS`             | Requests the current game status.                 |
+| `GAME_ID PLAYER_ID LEAVE`              | Leaves the current game.                          |
 
----
+*(Server responses are implicitly handled to update client state)*
 
-## Protokół komunikacyjny
-Gra działa w architekturze **klient-serwer**, gdzie serwer obsługuje komendy wysyłane przez klientów.
+## Project Structure
 
-### Komendy klienta
+The project is organized into four Maven modules:
 
-| **Komenda** | **Opis** |
-|------------|---------|
-| `GAME_ID PLAYER_ID CREATE` | Tworzy nową grę (ID gry, ID gracza). |
-| `GAME_ID PLAYER_ID JOIN amount` | Dołączenie do istniejącej gry (ID gry, ID gracza, kwota wejściowa). |
-| `GAME_ID PLAYER_ID READY` | Zasygnalizowanie gotowości do gry. |
-| `GAME_ID PLAYER_ID FOLD` | Spasowanie ręki. |
-| `GAME_ID PLAYER_ID CALL` | Wyrównanie aktualnej stawki. |
-| `GAME_ID PLAYER_ID CHECK` | Sprawdzenie (bez podbijania). |
-| `GAME_ID PLAYER_ID RAISE raiseValue` | Podbicie stawki o `raiseValue`. |
-| `GAME_ID PLAYER_ID EXCHANGE 2,3` | Wymiana kart (numery kart do wymiany). |
-| `GAME_ID PLAYER_ID STATUS` | Żądanie statusu gry. |
-| `GAME_ID PLAYER_ID LEAVE` | Opuszczenie gry. |
+1.  **`poker-server`**
+    * Contains the server application logic.
+    * Handles client connections, game state management, and rule enforcement.
+    * Builds into an executable JAR.
+2.  **`poker-client`**
+    * Provides a text-based console client for interacting with the game server.
+    * Sends commands and displays server responses.
+    * Builds into an executable JAR.
+3.  **`poker-model`**
+    * Encapsulates the core game logic and domain models (e.g., `Player`, `Card`, `Deck`, `HandEvaluator`, betting rules).
+    * Independent of network communication.
+4.  **`poker-common`**
+    * Contains shared classes, data structures, and constants used by other modules (e.g., command formats, utility classes).
 
----
+## Documentation
 
-## Struktura projektu
+Auto-generated Javadoc documentation for the project is available in HTML format within the repository:
 
-Projekt podzielony jest na **cztery moduły**:
+javadoc/site/apidocs/index.html
 
-### **1. poker-server** 
-- Moduł serwera gry.
-- Obsługuje komunikację z klientami i zarządza stanem gry.
-- Budowany do pliku JAR wykonywalnego.
+## Running the Application
 
-### **2. poker-client**  
-- Tekstowy klient gry umożliwiający interakcję poprzez konsolę.
-- Wysyła komendy do serwera i odbiera wyniki.
-- Budowany do pliku JAR wykonywalnego.
+### 1. Start the Server
 
-### **3. poker-model**  
-- Zawiera **logikę biznesową gry** – obsługa graczy, talii kart, porównywanie rąk, zarządzanie pulą.
+Navigate to the server module's target directory and run the JAR:
 
-### **4. poker-common** 
-- Zawiera **wspólne klasy** wykorzystywane przez inne moduły, np. definicje komunikatów i struktury danych.
-
----
-
-## Dokumentacja Javadoc
-- Katalog **`javadoc`** zawiera automatycznie wygenerowaną **dokumentację projektu**, dostępną w formacie HTML.
-- Dokumentacja obejmuje opisy klas, metod i interfejsów użytych w kodzie.
-- Znajduje się w ścieżce:
-  ```
-  javadoc/site/apidocs/index.html
-  ```
-
----
-
-## Uruchamianie gry
-
-### Uruchomienie Serwera
 ```sh
 cd poker-server/target
 java -jar poker-server-1.0-SNAPSHOT.jar
 ```
 
-### Uruchomienie Klienta
+### 2. Start Client(s)
+
+Navigate to the client module's target directory and run the JAR (repeat for each player):
+
 ```sh
 cd poker-client/target
 java -jar poker-client-1.0-SNAPSHOT.jar
 ```
 
----
+## Code Quality
 
-## Jakość kodu
+Code quality was assessed using SonarQube. The analysis confirmed:
 
-Projekt został sprawdzony pod kątem **jakości kodu** przy użyciu **SonarQube**:
-- **Pokrycie testami jednostkowymi** na odpowiednim poziomie.
-- **Brak błędów krytycznych i wysokiego ryzyka**.
-- **Optymalizacja kodu** pod kątem wydajności i czytelności.
-
----
-
-## Podsumowanie
-Projekt **"Poker-Game"** to **symulacja pokera pięciokartowego dobieranego**, działająca w architekturze **klient-serwer**. Obsługuje do **4 graczy** i implementuje pełny mechanizm **zakładów, wymiany kart i porównywania rąk**.
-
----
-
+* Adequate unit test coverage.
+* Absence of critical or high-severity bugs.
+* Code optimized for readability and maintainability according to standard practices.
